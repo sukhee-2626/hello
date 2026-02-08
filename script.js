@@ -104,13 +104,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // ===== ADD TO CART FUNCTIONALITY =====
 function setupCartButtons() {
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', function () {
-            const productName = this.closest('.product-content').querySelector('.product-name').textContent;
+    // Add to cart interaction
+    const addToCartBtns = document.querySelectorAll('.add-to-cart');
+    addToCartBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const productName = this.closest('.product-card').querySelector('.product-name').textContent;
+            this.textContent = '✓ Added!';
+            this.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
 
-            // Visual feedback
-            this.textContent = 'Added! ✓';
-            this.style.background = '#4CAF50';
+            // Show toast notification
+            if (window.showToast) {
+                window.showToast(`${productName} added to cart!`, 'success');
+            }
 
             setTimeout(() => {
                 this.textContent = 'Add to Cart';

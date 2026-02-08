@@ -108,6 +108,10 @@ function addToCart() {
     btn.innerHTML = '✓ Added to Cart!';
     btn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
 
+    if (window.showToast) {
+        window.showToast(`${productData.name} added to cart!`, 'success');
+    }
+
     setTimeout(() => {
         btn.innerHTML = originalText;
         btn.style.background = '';
