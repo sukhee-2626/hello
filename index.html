@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="customizer.css">
     <link rel="stylesheet" href="banners.css">
     <link rel="stylesheet" href="effects.css">
+    <link rel="stylesheet" href="slider.css">
 </head>
 
 <body>
@@ -83,14 +84,44 @@
             </div>
         </nav>
 
-        <!-- Hero Section -->
-        <section class="hero fade-in" id="home">
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <h2 class="hero-title">Baking Dreams into Slices 🍰✨</h2>
-                <p class="hero-subtitle">Cakes that tell a story — one bite at a time.</p>
-                <a href="#cakes" class="cta-btn ripple">Explore Our Cakes</a>
+        <!-- Hero Banner Slider -->
+        <section class="hero-slider fade-in" id="home">
+            <div class="slider-container">
+                <!-- Slide 1 - Cafe Interior with Chef Logo -->
+                <div class="slide active">
+                    <div class="slide-bg"
+                        style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('banner1.jpg') center/cover no-repeat;">
+                        <!-- Content overlay removed to show full banner -->
+                    </div>
+                </div>
+
+                <!-- Slide 2 - Bakery Display -->
+                <div class="slide">
+                    <div class="slide-bg"
+                        style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('banner2.jpg') center/cover no-repeat;">
+                        <!-- Content overlay removed to show full banner -->
+                    </div>
+                </div>
+
+                <!-- Slide 3 - Cakes Display with Chef Logo -->
+                <div class="slide">
+                    <div class="slide-bg"
+                        style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('banner3.jpg') center/cover no-repeat;">
+                        <!-- Content overlay removed to show full banner -->
+                    </div>
+                </div>
             </div>
+
+            <!-- Navigation Dots -->
+            <div class="slider-dots">
+                <span class="dot active" onclick="currentSlide(0)"></span>
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="slider-arrow prev" onclick="changeSlide(-1)" aria-label="Previous slide">‹</button>
+            <button class="slider-arrow next" onclick="changeSlide(1)" aria-label="Next slide">›</button>
         </section>
 
         <!-- Promotional Banner -->
@@ -283,6 +314,7 @@
         <script src="script.js"></script>
         <script src="customizer.js"></script>
         <script src="effects.js"></script>
+        <script src="slider.js"></script>
     </body>
 
 </html>

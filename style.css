@@ -563,6 +563,23 @@ ul {
         left: 0;
     }
 
+    .hero {
+        min-height: 60vh;
+    }
+
+    .hero::after {
+        font-size: 2.5rem;
+        bottom: 10px;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+
     .hamburger {
         display: flex;
     }
