@@ -300,45 +300,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Render categories
     renderCategories();
 
-    // Fetch and render products from API
-    try {
-        // Try to fetch from API first
-        const allProducts = await fetchProducts();
+    // Check if products.js is loaded
+    if (typeof getAllProducts === 'function') {
+        // Use local products.js database
+        const allProducts = getAllProducts();
 
-        if (allProducts.length > 0) {
-            // Render Hot Products (Bestsellers)
-            const hotProducts = allProducts
-                .filter(p => p.is_bestseller || p.isBestseller)
-                .slice(0, 4);
-            renderProducts(hotProducts.length > 0 ? hotProducts : allProducts.slice(0, 4), 'hotProducts');
+        console.log(`📦 Found ${allProducts.length} products in database`);
 
-            // Render Best Sellers (Top rated)
-            const bestSellers = [...allProducts]
-                .sort((a, b) => b.rating - a.rating)
-                .slice(0, 4);
-            renderProducts(bestSellers, 'bestSellers');
+        // Render ALL products in Hot Products section
+        renderProducts(allProducts, 'hotProducts');
 
-            console.log('✅ Products loaded from API');
-        } else {
-            // Fallback to local products.js
-            if (typeof getAllProducts === 'function') {
-                const localProducts = getAllProducts();
-                const hotProducts = typeof getBestsellers === 'function' ? getBestsellers().slice(0, 4) : localProducts.slice(0, 4);
-                const bestSellers = typeof sortProducts === 'function' ? sortProducts(localProducts, 'rating').slice(0, 4) : localProducts.slice(4, 8);
+        // Render ALL products sorted by rating in Best Sellers
+        const bestSellers = [...allProducts].sort((a, b) => b.rating - a.rating);
+        renderProducts(bestSellers, 'bestSellers');
 
-                renderProducts(hotProducts, 'hotProducts');
+        console.log(`✅ Displaying ALL ${allProducts.length} products!`);
+    } else {
+        console.warn('⚠️ products.js not loaded. Trying API...');
+        // Fallback: Try to fetch from API
+        try {
+            const allProducts = await fetchProducts();
+
+            if (allProducts.length > 0) {
+                renderProducts(allProducts, 'hotProducts');
+                const bestSellers = [...allProducts].sort((a, b) => b.rating - a.rating);
                 renderProducts(bestSellers, 'bestSellers');
-
-                console.log('✅ Products loaded from local database');
+                console.log(`✅ Loaded ${allProducts.length} products from API`);
+            } else {
+                console.error('❌ No products available!');
             }
-        }
-    } catch (error) {
-        console.error('Error loading products:', error);
-        // Fallback to local products
-        if (typeof getAllProducts === 'function') {
-            const localProducts = getAllProducts();
-            renderProducts(localProducts.slice(0, 4), 'hotProducts');
-            renderProducts(localProducts.slice(4, 8), 'bestSellers');
+        } catch (error) {
+            console.error('Error loading products:', error);
         }
     }
 
@@ -354,5 +346,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupCustomizerHandlers();
     }
 
-    console.log('🍰 Maha Cakes fullstack application loaded successfully!');
+    console.log('🍰 Maha Cakes - All products loaded and visible!');
 });
