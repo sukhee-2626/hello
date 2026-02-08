@@ -1,59 +1,188 @@
-// ===== DATA =====
+// ===== MAHA CAKES - MAIN SCRIPT =====
+// Using products from products.js database
+
+// ===== CATEGORIES DATA =====
 const categories = [
-    { name: 'Black Forest', emoji: '🍫', link: '#', gradient: 'linear-gradient(135deg, #3d2817, #5E3023)' },
-    { name: 'Red Velvet', emoji: '❤️', link: '#', gradient: 'linear-gradient(135deg, #dc143c, #ff6b9d)' },
-    { name: 'Chocolate Truffle', emoji: '🍰', link: '#', gradient: 'linear-gradient(135deg, #4a2c2a, #6f4e37)' },
-    { name: 'Butterscotch', emoji: '🧈', link: '#', gradient: 'linear-gradient(135deg, #d4a574, #f4c430)' },
-    { name: 'Pineapple', emoji: '🍍', link: '#', gradient: 'linear-gradient(135deg, #ffd700, #ffed4e)' },
-    { name: 'Strawberry', emoji: '🍓', link: '#', gradient: 'linear-gradient(135deg, #ff6b9d, #ffc0cb)' },
-    { name: 'White Forest', emoji: '🤍', link: '#', gradient: 'linear-gradient(135deg, #f5f5f5, #ffffff)' },
-    { name: 'Vanilla', emoji: '🍦', link: '#', gradient: 'linear-gradient(135deg, #fff8dc, #fffacd)' },
-    { name: 'Mango', emoji: '🥭', link: '#', gradient: 'linear-gradient(135deg, #ffb347, #ffd700)' },
-    { name: 'Blueberry', emoji: '🫐', link: '#', gradient: 'linear-gradient(135deg, #4169e1, #87ceeb)' },
-    { name: 'Caramel', emoji: '🍮', link: '#', gradient: 'linear-gradient(135deg, #c68642, #daa520)' },
-    { name: 'Custom Cakes', emoji: '🎨', link: '#', gradient: 'linear-gradient(135deg, #ff6b9d, #c9ada7, #87ceeb)' }
+    {
+        id: 1,
+        name: 'Bestsellers',
+        emoji: '⭐',
+        description: 'Our most loved cakes',
+        gradient: 'linear-gradient(135deg, #FFD700, #FFA500)'
+    },
+    {
+        id: 2,
+        name: 'Designer Cakes',
+        emoji: '🎨',
+        description: 'Custom designed cakes',
+        gradient: 'linear-gradient(135deg, #FFB6C1, #FF69B4)'
+    },
+    {
+        id: 3,
+        name: 'Eggless Cakes',
+        emoji: '🥚',
+        description: '100% eggless options',
+        gradient: 'linear-gradient(135deg, #90EE90, #32CD32)'
+    },
+    {
+        id: 4,
+        name: 'Premium Cakes',
+        emoji: '💎',
+        description: 'Luxury cake collection',
+        gradient: 'linear-gradient(135deg, #C19A6B, #FFD700)'
+    },
+    {
+        id: 5,
+        name: 'Fruit Cakes',
+        emoji: '🍓',
+        description: 'Fresh fruit flavors',
+        gradient: 'linear-gradient(135deg, #FF69B4, #FFA500)'
+    },
+    {
+        id: 6,
+        name: 'Cupcakes',
+        emoji: '🧁',
+        description: 'Mini delights',
+        gradient: 'linear-gradient(135deg, #FFC0CB, #FFB6C1)'
+    }
 ];
 
-const hotProducts = [
-    { name: 'Red Velvet Cake', price: '₹599', emoji: '❤️', gradient: 'linear-gradient(135deg, #dc143c, #ff6b9d)' },
-    { name: 'Double Chocolate', price: '₹649', emoji: '🍫', gradient: 'linear-gradient(135deg, #3d2817, #6f4e37)' },
-    { name: 'Almond White Chocolate', price: '₹699', emoji: '🤍', gradient: 'linear-gradient(135deg, #f5deb3, #ffffff)' },
-    { name: 'Vancho Cake', price: '₹549', emoji: '🍦', gradient: 'linear-gradient(135deg, #fff8dc, #fffacd)' }
-];
-
-const bestSellers = [
-    { name: 'Chocolate Truffle', price: '₹649', emoji: '🍰', gradient: 'linear-gradient(135deg, #4a2c2a, #6f4e37)' },
-    { name: 'Praline Butterscotch', price: '₹599', emoji: '🧈', gradient: 'linear-gradient(135deg, #d4a574, #f4c430)' },
-    { name: 'Black Forest', price: '₹599', emoji: '🍫', gradient: 'linear-gradient(135deg, #3d2817, #5E3023)' },
-    { name: 'Fresh Fruit Cake', price: '₹699', emoji: '🍓', gradient: 'linear-gradient(135deg, #ff6b9d, #ffd700, #87ceeb)' }
-];
-
-// ===== RENDER FUNCTIONS =====
+// ===== RENDER CATEGORIES =====
 function renderCategories() {
-    const grid = document.getElementById('categoryGrid');
-    grid.innerHTML = categories.map(cat => `
-        <div class="category-card">
-            <div class="category-image" style="background: ${cat.gradient};">${cat.emoji}</div>
+    const categoryGrid = document.getElementById('categoryGrid');
+    if (!categoryGrid) return;
+
+    categoryGrid.innerHTML = categories.map(category => `
+        <div class="category-card" onclick="filterByCategory('${category.name}')">
+            <div class="category-image" style="background: ${category.gradient};">${category.emoji}</div>
             <div class="category-content">
-                <h3 class="category-name">${cat.name}</h3>
-                <a href="${cat.link}" class="category-link">View Cakes →</a>
+                <h3 class="category-name">${category.name}</h3>
+                <p class="category-description">${category.description}</p>
+                <a href="#cakes" class="category-link">View Cakes →</a>
             </div>
         </div>
     `).join('');
 }
 
-function renderProducts(products, containerId) {
+// ===== RENDER PRODUCTS =====
+function renderProducts(productsArray, containerId) {
     const grid = document.getElementById(containerId);
-    grid.innerHTML = products.map(product => `
-        <div class="product-card">
-            <div class="product-image" style="background: ${product.gradient};">${product.emoji}</div>
+    if (!grid) return;
+
+    grid.innerHTML = productsArray.map(product => `
+        <div class="product-card" data-id="${product.id}">
+            <div class="product-image-wrapper">
+                <img src="${product.image}" alt="${product.name}" class="product-image">
+                ${product.discount > 0 ? `<span class="discount-badge">-${product.discount}%</span>` : ''}
+                ${product.sameDayDelivery ? '<span class="delivery-badge">⚡ Same Day</span>' : ''}
+            </div>
             <div class="product-content">
                 <h3 class="product-name">${product.name}</h3>
-                <p class="product-price">${product.price}</p>
-                <button class="add-to-cart">Add to Cart</button>
+                <div class="product-rating">
+                    ${'⭐'.repeat(Math.floor(product.rating))}
+                    <span class="rating-count">(${product.reviewCount})</span>
+                </div>
+                <div class="product-meta">
+                    <span class="product-weight">${product.weight}</span>
+                    ${product.eggType === 'eggless' ? '<span class="eggless-badge">🥚 Eggless</span>' : ''}
+                </div>
+                <div class="product-price-wrapper">
+                    <span class="product-price">₹${product.price}</span>
+                    ${product.originalPrice ? `<span class="original-price">₹${product.originalPrice}</span>` : ''}
+                </div>
+                <button class="add-to-cart ripple" onclick="addToCart(${product.id})">
+                    Add to Cart
+                </button>
             </div>
         </div>
     `).join('');
+}
+
+// ===== FILTER BY CATEGORY =====
+function filterByCategory(categoryName) {
+    let filteredProducts = [];
+
+    switch (categoryName) {
+        case 'Bestsellers':
+            filteredProducts = getBestsellers();
+            break;
+        case 'Designer Cakes':
+            filteredProducts = getProductsBySubcategory('Designer Cakes');
+            break;
+        case 'Eggless Cakes':
+            filteredProducts = getEgglessCakes();
+            break;
+        case 'Premium Cakes':
+            filteredProducts = getProductsBySubcategory('Premium Cakes');
+            break;
+        case 'Fruit Cakes':
+            filteredProducts = getProductsBySubcategory('Fruit Cakes');
+            break;
+        case 'Cupcakes':
+            filteredProducts = getProductsByCategory('Cupcakes');
+            break;
+        default:
+            filteredProducts = getAllProducts();
+    }
+
+    // Scroll to products section
+    document.getElementById('cakes').scrollIntoView({ behavior: 'smooth' });
+
+    // Render filtered products
+    renderProducts(filteredProducts, 'hotProducts');
+}
+
+// ===== ADD TO CART =====
+function addToCart(productId) {
+    const product = getProductById(productId);
+    if (!product) return;
+
+    // Get existing cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    // Check if product already in cart
+    const existingItem = cart.find(item => item.id === productId);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: 1
+        });
+    }
+
+    // Save to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update cart count
+    updateCartCount();
+
+    // Show toast notification
+    if (window.showToast) {
+        window.showToast(`${product.name} added to cart!`, 'success');
+    }
+
+    console.log(`Added ${product.name} to cart`);
+}
+
+// ===== UPDATE CART COUNT =====
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    const cartCount = document.getElementById('cartCount');
+    if (cartCount) {
+        if (totalItems > 0) {
+            cartCount.textContent = totalItems;
+            cartCount.style.display = 'flex';
+        } else {
+            cartCount.style.display = 'none';
+        }
+    }
 }
 
 // ===== NAVBAR FUNCTIONALITY =====
@@ -61,18 +190,20 @@ const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('navLinks');
 const navbar = document.getElementById('navbar');
 
-hamburger.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-    hamburger.classList.toggle('active');
-});
-
-// Close menu when clicking on a link
-navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        hamburger.classList.remove('active');
+if (hamburger && navLinks) {
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        hamburger.classList.toggle('active');
     });
-});
+
+    // Close menu when clicking on a link
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            hamburger.classList.remove('active');
+        });
+    });
+}
 
 // Navbar scroll effect
 let lastScroll = 0;
@@ -102,31 +233,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// ===== ADD TO CART FUNCTIONALITY =====
-function setupCartButtons() {
-    // Add to cart interaction
-    const addToCartBtns = document.querySelectorAll('.add-to-cart');
-    addToCartBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const productName = this.closest('.product-card').querySelector('.product-name').textContent;
-            this.textContent = '✓ Added!';
-            this.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
-
-            // Show toast notification
-            if (window.showToast) {
-                window.showToast(`${productName} added to cart!`, 'success');
-            }
-
-            setTimeout(() => {
-                this.textContent = 'Add to Cart';
-                this.style.background = '';
-            }, 2000);
-
-            console.log(`Added ${productName} to cart`);
-        });
-    });
-}
-
 // ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
 const observerOptions = {
     threshold: 0.1,
@@ -154,10 +260,21 @@ function setupAnimations() {
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
+    // Render categories
     renderCategories();
+
+    // Render Hot Products (Bestsellers)
+    const hotProducts = getBestsellers().slice(0, 4);
     renderProducts(hotProducts, 'hotProducts');
+
+    // Render Best Sellers (Top rated)
+    const bestSellers = sortProducts(getAllProducts(), 'rating').slice(0, 4);
     renderProducts(bestSellers, 'bestSellers');
-    setupCartButtons();
+
+    // Update cart count
+    updateCartCount();
+
+    // Setup animations
     setupAnimations();
 
     // Initialize customizer if functions exist
@@ -167,4 +284,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     console.log('🍰 Maha Cakes website loaded successfully!');
+    console.log(`📦 Loaded ${getAllProducts().length} products from database`);
 });
