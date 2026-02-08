@@ -1,5 +1,7 @@
-// ===== MAHA CAKES - MAIN SCRIPT =====
-// Using products from products.js database
+// ===== MAHA CAKES - MAIN SCRIPT (FULLSTACK VERSION) =====
+// Using backend API for products
+
+const API_BASE_URL = 'http://localhost:3000/api';
 
 // ===== CATEGORIES DATA =====
 const categories = [
@@ -47,6 +49,31 @@ const categories = [
     }
 ];
 
+// ===== API FUNCTIONS =====
+async function fetchProducts(filters = {}) {
+    try {
+        const queryParams = new URLSearchParams(filters);
+        const response = await fetch(`${API_BASE_URL}/products?${queryParams}`);
+        const data = await response.json();
+        return data.products || [];
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        // Fallback to local products if API fails
+        return typeof getAllProducts === 'function' ? getAllProducts() : [];
+    }
+}
+
+async function fetchProductById(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/products/${id}`);
+        const data = await response.json();
+        return data.product;
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        return null;
+    }
+}
+
 // ===== RENDER CATEGORIES =====
 function renderCategories() {
     const categoryGrid = document.getElementById('categoryGrid');
@@ -72,23 +99,23 @@ function renderProducts(productsArray, containerId) {
     grid.innerHTML = productsArray.map(product => `
         <div class="product-card" data-id="${product.id}">
             <div class="product-image-wrapper">
-                <img src="${product.image}" alt="${product.name}" class="product-image">
+                <img src="${product.image_url || product.image}" alt="${product.name}" class="product-image" onerror="this.src='https://via.placeholder.com/400x400/8B4513/FFFFFF?text=${encodeURIComponent(product.name)}'">
                 ${product.discount > 0 ? `<span class="discount-badge">-${product.discount}%</span>` : ''}
-                ${product.sameDayDelivery ? '<span class="delivery-badge">⚡ Same Day</span>' : ''}
+                ${product.same_day_delivery || product.sameDayDelivery ? '<span class="delivery-badge">⚡ Same Day</span>' : ''}
             </div>
             <div class="product-content">
                 <h3 class="product-name">${product.name}</h3>
                 <div class="product-rating">
                     ${'⭐'.repeat(Math.floor(product.rating))}
-                    <span class="rating-count">(${product.reviewCount})</span>
+                    <span class="rating-count">(${product.review_count || product.reviewCount || 0})</span>
                 </div>
                 <div class="product-meta">
                     <span class="product-weight">${product.weight}</span>
-                    ${product.eggType === 'eggless' ? '<span class="eggless-badge">🥚 Eggless</span>' : ''}
+                    ${product.egg_type === 'eggless' || product.eggType === 'eggless' ? '<span class="eggless-badge">🥚 Eggless</span>' : ''}
                 </div>
                 <div class="product-price-wrapper">
                     <span class="product-price">₹${product.price}</span>
-                    ${product.originalPrice ? `<span class="original-price">₹${product.originalPrice}</span>` : ''}
+                    ${product.original_price || product.originalPrice ? `<span class="original-price">₹${product.original_price || product.originalPrice}</span>` : ''}
                 </div>
                 <button class="add-to-cart ripple" onclick="addToCart(${product.id})">
                     Add to Cart
@@ -99,46 +126,56 @@ function renderProducts(productsArray, containerId) {
 }
 
 // ===== FILTER BY CATEGORY =====
-function filterByCategory(categoryName) {
-    let filteredProducts = [];
+async function filterByCategory(categoryName) {
+    let filters = {};
 
     switch (categoryName) {
         case 'Bestsellers':
-            filteredProducts = getBestsellers();
+            // Fetch bestsellers from API or use local function
+            const bestsellers = typeof getBestsellers === 'function' ? getBestsellers() : await fetchProducts({ sort: 'rating' });
+            renderProducts(bestsellers, 'hotProducts');
             break;
         case 'Designer Cakes':
-            filteredProducts = getProductsBySubcategory('Designer Cakes');
+            filters = { subcategory: 'Designer Cakes' };
             break;
         case 'Eggless Cakes':
-            filteredProducts = getEgglessCakes();
+            filters = { eggType: 'eggless' };
             break;
         case 'Premium Cakes':
-            filteredProducts = getProductsBySubcategory('Premium Cakes');
+            filters = { subcategory: 'Premium Cakes' };
             break;
         case 'Fruit Cakes':
-            filteredProducts = getProductsBySubcategory('Fruit Cakes');
+            filters = { subcategory: 'Fruit Cakes' };
             break;
         case 'Cupcakes':
-            filteredProducts = getProductsByCategory('Cupcakes');
+            filters = { category: 'Cupcakes' };
             break;
-        default:
-            filteredProducts = getAllProducts();
+    }
+
+    if (Object.keys(filters).length > 0) {
+        const products = await fetchProducts(filters);
+        renderProducts(products, 'hotProducts');
     }
 
     // Scroll to products section
-    document.getElementById('cakes').scrollIntoView({ behavior: 'smooth' });
-
-    // Render filtered products
-    renderProducts(filteredProducts, 'hotProducts');
+    document.getElementById('cakes')?.scrollIntoView({ behavior: 'smooth' });
 }
 
 // ===== ADD TO CART =====
 function addToCart(productId) {
-    const product = getProductById(productId);
-    if (!product) return;
-
     // Get existing cart from localStorage
     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    // Find product (try both API and local)
+    let product = null;
+    if (typeof getProductById === 'function') {
+        product = getProductById(productId);
+    }
+
+    if (!product) {
+        console.error('Product not found');
+        return;
+    }
 
     // Check if product already in cart
     const existingItem = cart.find(item => item.id === productId);
@@ -150,7 +187,7 @@ function addToCart(productId) {
             id: product.id,
             name: product.name,
             price: product.price,
-            image: product.image,
+            image: product.image_url || product.image,
             quantity: 1
         });
     }
@@ -259,17 +296,51 @@ function setupAnimations() {
 }
 
 // ===== INITIALIZATION =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Render categories
     renderCategories();
 
-    // Render Hot Products (Bestsellers)
-    const hotProducts = getBestsellers().slice(0, 4);
-    renderProducts(hotProducts, 'hotProducts');
+    // Fetch and render products from API
+    try {
+        // Try to fetch from API first
+        const allProducts = await fetchProducts();
 
-    // Render Best Sellers (Top rated)
-    const bestSellers = sortProducts(getAllProducts(), 'rating').slice(0, 4);
-    renderProducts(bestSellers, 'bestSellers');
+        if (allProducts.length > 0) {
+            // Render Hot Products (Bestsellers)
+            const hotProducts = allProducts
+                .filter(p => p.is_bestseller || p.isBestseller)
+                .slice(0, 4);
+            renderProducts(hotProducts.length > 0 ? hotProducts : allProducts.slice(0, 4), 'hotProducts');
+
+            // Render Best Sellers (Top rated)
+            const bestSellers = [...allProducts]
+                .sort((a, b) => b.rating - a.rating)
+                .slice(0, 4);
+            renderProducts(bestSellers, 'bestSellers');
+
+            console.log('✅ Products loaded from API');
+        } else {
+            // Fallback to local products.js
+            if (typeof getAllProducts === 'function') {
+                const localProducts = getAllProducts();
+                const hotProducts = typeof getBestsellers === 'function' ? getBestsellers().slice(0, 4) : localProducts.slice(0, 4);
+                const bestSellers = typeof sortProducts === 'function' ? sortProducts(localProducts, 'rating').slice(0, 4) : localProducts.slice(4, 8);
+
+                renderProducts(hotProducts, 'hotProducts');
+                renderProducts(bestSellers, 'bestSellers');
+
+                console.log('✅ Products loaded from local database');
+            }
+        }
+    } catch (error) {
+        console.error('Error loading products:', error);
+        // Fallback to local products
+        if (typeof getAllProducts === 'function') {
+            const localProducts = getAllProducts();
+            renderProducts(localProducts.slice(0, 4), 'hotProducts');
+            renderProducts(localProducts.slice(4, 8), 'bestSellers');
+        }
+    }
 
     // Update cart count
     updateCartCount();
@@ -283,6 +354,5 @@ document.addEventListener('DOMContentLoaded', () => {
         setupCustomizerHandlers();
     }
 
-    console.log('🍰 Maha Cakes website loaded successfully!');
-    console.log(`📦 Loaded ${getAllProducts().length} products from database`);
+    console.log('🍰 Maha Cakes fullstack application loaded successfully!');
 });
