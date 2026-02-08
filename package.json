@@ -1,0 +1,13 @@
+{
+  "name": "maha-cakes",
+  "version": "1.0.0",
+  "description": "Premium cake e-commerce website for Maha Cakes",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'No build step required for static site'",
+    "start": "npx serve ."
+  },
+  "keywords": ["cakes", "bakery", "ecommerce"],
+  "author": "Maha Cakes",
+  "license": "MIT"
+}
