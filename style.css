@@ -121,15 +121,18 @@ ul {
 .logo a {
     display: flex;
     align-items: center;
+    text-decoration: none;
 }
 
-.logo-img {
-    height: 60px;
-    width: auto;
+.logo-text {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
     transition: var(--transition);
 }
 
-.logo-img:hover {
+.logo-text:hover {
     transform: scale(1.05);
 }
 
