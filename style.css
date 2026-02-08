@@ -422,22 +422,62 @@ ul {
     border-color: var(--accent);
 }
 
-.product-image {
+.product-image-wrapper {
+    position: relative;
     width: 100%;
     height: 280px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 5rem;
-    position: relative;
     overflow: hidden;
+    background: #f8f8f8;
 }
 
-.product-image::after {
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: var(--transition);
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+.product-image-wrapper::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+    background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.1));
+    pointer-events: none;
+}
+
+/* Discount Badge */
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+}
+
+/* Delivery Badge */
+.delivery-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #27ae60, #229954);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.4);
 }
 
 .product-content {
@@ -446,16 +486,74 @@ ul {
 
 .product-name {
     font-family: var(--font-heading);
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: var(--primary);
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    min-height: 50px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Product Rating */
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.rating-count {
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+/* Product Meta */
+.product-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.product-weight {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.eggless-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Product Price */
+.product-price-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 .product-price {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: var(--primary);
-    margin-bottom: var(--spacing-sm);
+}
+
+.original-price {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    text-decoration: line-through;
+    font-weight: 400;
 }
 
 .add-to-cart {
