@@ -1,14 +1,5 @@
 // ===== ADVANCED FRONTEND EFFECTS =====
-
-// Loading Screen
-window.addEventListener('load', () => {
-    const loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) {
-        setTimeout(() => {
-            loadingScreen.classList.add('hidden');
-        }, 300); // Reduced from 1000ms to 300ms for faster loading
-    }
-});
+// Loading screen removed for instant page load
 
 // Scroll Progress Bar
 function updateScrollProgress() {
