@@ -6,7 +6,7 @@ window.addEventListener('load', () => {
     if (loadingScreen) {
         setTimeout(() => {
             loadingScreen.classList.add('hidden');
-        }, 1000);
+        }, 300); // Reduced from 1000ms to 300ms for faster loading
     }
 });
 
