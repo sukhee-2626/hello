@@ -17,7 +17,15 @@
         url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><circle cx="200" cy="200" r="150" fill="%23FDE2E4" opacity="0.3"/><circle cx="800" cy="400" r="200" fill="%23C9ADA7" opacity="0.3"/><circle cx="1000" cy="600" r="180" fill="%23FDE2E4" opacity="0.2"/></svg>');
     background-size: cover;
     filter: blur(100px);
-    z-index: -1;
+    z-index: 0;
+}
+
+/* Fullscreen auth page */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .auth-container {
@@ -163,6 +171,12 @@
 .our-works .section-title {
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Standalone Our Works Section */
+.our-works-section {
+    padding: var(--spacing-xl) 0;
+    background: var(--background);
 }
 
 .works-grid {
